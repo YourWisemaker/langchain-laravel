@@ -1,6 +1,8 @@
 includes:
     - vendor/larastan/larastan/extension.neon
 
+bleedingEdge: false
+
 parameters:
     level: 8
     paths:
@@ -47,7 +49,7 @@ parameters:
     checkFunctionNameCase: true
     checkInternalClassCaseSensitivity: true
     checkMissingCallableSignature: true
-    checkMissingVarDocTypeHint: true
+    checkMissingVarTagTypehint: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     checkUninitializedProperties: true
     checkDynamicProperties: false  # Laravel uses dynamic properties extensively
@@ -76,7 +78,7 @@ parameters:
         OpenAIParams: 'array<string, mixed>'
     
     # Custom services
-    services:
+    # services:
         # Add custom services here if needed
     
     # Extensions
@@ -88,7 +90,7 @@ parameters:
         - stdClass
     
     # Custom rules
-    rules:
+    # rules:
         # Add custom rules here
     
     # File extensions
@@ -106,10 +108,10 @@ parameters:
     checkExplicitMixed: true
     
     # Validate PHPDoc
-    validatePhpDocTags: true
+    # validatePhpDocTags: true
     
     # Report magic constants
-    reportMagicConstants: true
+    # reportMagicConstants: true
     
     # Report magic properties
     reportMagicProperties: true
@@ -118,29 +120,5 @@ parameters:
     customRulesetUsed: true
     
     # Bleeding edge features
-    bleedingEdge: false
     
     # Feature toggles
-    featureToggles:
-        bleedingEdge: false
-        disableRuntimeReflectionProvider: false
-        closureDefaultParameterTypeRule: true
-        newRuleLevelHelper: true
-        consistentConstructor: true
-        checkAdvancedIsset: true
-        checkExplicitMixedMissingReturn: true
-        checkFunctionNameCase: true
-        checkInternalClassCaseSensitivity: true
-        reportMagicConstants: true
-        reportMagicProperties: true
-        validatePhpDocTags: true
-        stricterFunctionCallAnalysis: true
-        tooWideReturnTypesInProtectedAndPublicMethods: true
-        uselessReturnValue: true
-        closureUsesThis: true
-        arrayFilter: true
-        arrayUnpacking: true
-        nodeConnectingVisitorCompatibility: true
-        mixedAssignCheck: true
-        strictArrays: false  # Laravel uses mixed arrays frequently
-        allRules: false

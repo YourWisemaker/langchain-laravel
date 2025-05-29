@@ -2,6 +2,7 @@
 
 namespace LangChainLaravel\AI\Providers;
 
+use LangChainLaravel\AI\Adapters\OpenAI\ClientAdapter;
 use OpenAI\Client as OpenAIClient;
 use OpenAI\Factory;
 use RuntimeException;
@@ -9,7 +10,7 @@ use OpenAI\Exceptions\ErrorException;
 
 class OpenAIProvider extends AbstractProvider
 {
-    protected ?OpenAIClient $client = null;
+    protected ?ClientAdapter $client = null;
 
     /**
      * Generate text using OpenAI
@@ -71,7 +72,7 @@ class OpenAIProvider extends AbstractProvider
     /**
      * Get OpenAI client instance
      */
-    public function getClient(): OpenAIClient
+    public function getClient(): ClientAdapter
     {
         if (!$this->client) {
             $this->validateConfig();
@@ -86,9 +87,9 @@ class OpenAIProvider extends AbstractProvider
                 $factory = $factory->withBaseUri($baseUrl);
             }
             
-            $this->client = $factory->make();
+            $realClient = $factory->make();
+            $this->client = new ClientAdapter($realClient);
         }
-
         return $this->client;
     }
 

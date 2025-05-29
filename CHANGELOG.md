@@ -184,7 +184,7 @@ tests/
 Contributions are welcome! Please read our contributing guidelines and ensure all tests pass before submitting a pull request.
 
 ### License
-This package is open-sourced software licensed under the [MIT license](LICENSE).
+This package is open-sourced software licensed under the [MIT license](LICENSE.md).
 
 ### Credits
 - Inspired by the [kambo-1st/langchain-php](https://github.com/kambo-1st/langchain-php) project

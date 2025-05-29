@@ -279,6 +279,6 @@ Visit these routes in your browser to test the integration:
 
 If you encounter issues:
 
-1. Check the [examples](examples/) directory
+1. Check the [examples](../examples/) directory
 2. Review the [API documentation](api.md)
 3. Open an issue on GitHub
