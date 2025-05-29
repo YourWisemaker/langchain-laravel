@@ -6,7 +6,7 @@
  * This file demonstrates advanced patterns and integrations.
  */
 
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;

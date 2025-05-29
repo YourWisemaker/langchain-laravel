@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use LangChain\LangChainServiceProvider;
+use LangChainLaravel\LangChainServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -36,7 +36,7 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageAliases($app): array
     {
         return [
-            'LangChain' => \LangChain\Facades\LangChain::class,
+            'LangChain' => \LangChainLaravel\Facades\LangChain::class,
         ];
     }
 

@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use LangChain\Facades\LangChain;
-use LangChain\AI\LangChainManager;
-use LangChain\AI\Providers\OpenAIProvider;
-use LangChain\AI\Providers\ClaudeProvider;
-use LangChain\AI\Providers\LlamaProvider;
+use LangChainLaravel\Facades\LangChain;
+use LangChainLaravel\AI\LangChainManager;
+use LangChainLaravel\AI\Providers\OpenAIProvider;
+use LangChainLaravel\AI\Providers\ClaudeProvider;
+use LangChainLaravel\AI\Providers\LlamaProvider;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 

@@ -520,7 +520,7 @@ To create a custom provider, extend the `AbstractProvider` class and implement t
 
 namespace App\Providers;
 
-use LangChain\AI\Providers\AbstractProvider;
+use LangChainLaravel\AI\Providers\AbstractProvider;
 use Illuminate\Support\Facades\Http;
 
 class CustomAIProvider extends AbstractProvider
@@ -616,7 +616,7 @@ class CustomAIProvider extends AbstractProvider
 Register your custom provider using the `LangChain` facade:
 
 ```php
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use App\Providers\CustomAIProvider;
 
 // Register the custom provider
@@ -689,7 +689,7 @@ For automatic registration, add your custom provider to a service provider:
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use App\Providers\CustomAIProvider;
 
 class CustomAIServiceProvider extends ServiceProvider

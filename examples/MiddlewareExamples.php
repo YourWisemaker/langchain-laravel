@@ -15,7 +15,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 
 /**
  * Content Moderation Middleware

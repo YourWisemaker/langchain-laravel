@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use LangChain\Facades\LangChain;
-use LangChain\AI\LangChainManager;
+use LangChainLaravel\Facades\LangChain;
+use LangChainLaravel\AI\LangChainManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Mockery;

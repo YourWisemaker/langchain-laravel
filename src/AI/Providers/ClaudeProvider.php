@@ -1,6 +1,6 @@
 <?php
 
-namespace LangChain\AI\Providers;
+namespace LangChainLaravel\AI\Providers;
 
 use RuntimeException;
 use Illuminate\Support\Facades\Http;

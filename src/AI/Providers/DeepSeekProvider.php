@@ -1,6 +1,6 @@
 <?php
 
-namespace LangChain\AI\Providers;
+namespace LangChainLaravel\AI\Providers;
 
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;

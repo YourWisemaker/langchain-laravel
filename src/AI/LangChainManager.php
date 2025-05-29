@@ -1,12 +1,12 @@
 <?php
 
-namespace LangChain\AI;
+namespace LangChainLaravel\AI;
 
-use LangChain\AI\Providers\AbstractProvider;
-use LangChain\AI\Providers\OpenAIProvider;
-use LangChain\AI\Providers\ClaudeProvider;
-use LangChain\AI\Providers\LlamaProvider;
-use LangChain\AI\Providers\DeepSeekProvider;
+use LangChainLaravel\AI\Providers\AbstractProvider;
+use LangChainLaravel\AI\Providers\OpenAIProvider;
+use LangChainLaravel\AI\Providers\ClaudeProvider;
+use LangChainLaravel\AI\Providers\LlamaProvider;
+use LangChainLaravel\AI\Providers\DeepSeekProvider;
 use RuntimeException;
 use InvalidArgumentException;
 

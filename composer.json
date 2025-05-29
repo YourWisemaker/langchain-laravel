@@ -51,7 +51,7 @@
     },
     "autoload": {
         "psr-4": {
-            "LangChain\\": "src/"
+            "LangChainLaravel\\": "src/"
         }
     },
     "autoload-dev": {
@@ -68,10 +68,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "LangChain\\LangChainServiceProvider"
+                "LangChainLaravel\\LangChainServiceProvider"
             ],
             "aliases": {
-                "LangChain": "LangChain\\Facades\\LangChain"
+                "LangChain": "LangChainLaravel\\Facades\\LangChain"
             }
         }
     },

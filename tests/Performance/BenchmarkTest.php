@@ -3,7 +3,7 @@
 namespace Tests\Performance;
 
 use Illuminate\Support\Facades\Cache;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use Tests\TestCase;
 
 /**

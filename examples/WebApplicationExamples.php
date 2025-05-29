@@ -15,7 +15,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 
 /**
  * Content Generation Controller

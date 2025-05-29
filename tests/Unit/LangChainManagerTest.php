@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use LangChain\AI\LangChainManager;
+use LangChainLaravel\AI\LangChainManager;
 use OpenAI\Client as OpenAIClient;
 use OpenAI\Exceptions\ErrorException;
 use RuntimeException;

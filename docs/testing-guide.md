@@ -866,7 +866,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Providers\CustomAIProvider;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use Illuminate\Support\Facades\Http;
 
 class CustomProviderTest extends TestCase
@@ -965,7 +965,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Providers\CustomAIProvider;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use Illuminate\Support\Facades\Http;
 
 class CustomProviderIntegrationTest extends TestCase
@@ -1076,7 +1076,7 @@ namespace Tests\Performance;
 
 use Tests\TestCase;
 use App\Providers\CustomAIProvider;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use Illuminate\Support\Facades\Http;
 
 class CustomProviderPerformanceTest extends TestCase

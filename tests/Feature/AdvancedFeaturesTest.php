@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\Facades\LangChain;
 use Tests\TestCase;
 use RuntimeException;
 

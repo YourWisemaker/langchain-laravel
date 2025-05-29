@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use LangChain\Facades\LangChain;
-use LangChain\AI\Providers\DeepSeekProvider;
-use LangChain\AI\Providers\AbstractProvider;
+use LangChainLaravel\Facades\LangChain;
+use LangChainLaravel\AI\Providers\DeepSeekProvider;
+use LangChainLaravel\AI\Providers\AbstractProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use ReflectionClass;
@@ -244,7 +244,7 @@ class EnhancedCapabilitiesTest extends TestCase
         $result = $provider->translateText('Hello', 'Spanish');
         
         $this->assertFalse($result['success']);
-        $this->assertStringContains('Translation capability not supported', $result['error']);
+        $this->assertStringContainsString('Translation capability not supported', $result['error']);
     }
     
     /** @test */
@@ -260,8 +260,8 @@ class EnhancedCapabilitiesTest extends TestCase
         $prompt = 'Hello world';
         $formattedPrompt = $method->invoke($provider, $prompt, 'Spanish');
         
-        $this->assertStringContains('Please respond in Spanish', $formattedPrompt);
-        $this->assertStringContains($prompt, $formattedPrompt);
+        $this->assertStringContainsString('Please respond in Spanish', $formattedPrompt);
+        $this->assertStringContainsString($prompt, $formattedPrompt);
         
         // Test auto language
         $autoPrompt = $method->invoke($provider, $prompt, 'auto');

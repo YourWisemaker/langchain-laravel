@@ -3,8 +3,8 @@
 namespace Tests\Integration;
 
 use Tests\TestCase;
-use LangChain\AI\LangChainManager;
-use LangChain\Facades\LangChain;
+use LangChainLaravel\AI\LangChainManager;
+use LangChainLaravel\Facades\LangChain;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 

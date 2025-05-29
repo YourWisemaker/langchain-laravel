@@ -1,9 +1,9 @@
 <?php
 
-namespace LangChain;
+namespace LangChainLaravel;
 
 use Illuminate\Support\ServiceProvider;
-use LangChain\AI\LangChainManager;
+use LangChainLaravel\AI\LangChainManager;
 
 class LangChainServiceProvider extends ServiceProvider
 {

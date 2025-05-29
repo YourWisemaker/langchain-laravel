@@ -1,6 +1,6 @@
 <?php
 
-namespace LangChain\AI\Providers;
+namespace LangChainLaravel\AI\Providers;
 
 use OpenAI\Client as OpenAIClient;
 use OpenAI\Factory;

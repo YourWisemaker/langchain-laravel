@@ -1,20 +1,20 @@
 <?php
 
-namespace LangChain\Facades;
+namespace LangChainLaravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use LangChain\AI\Providers\AbstractProvider;
+use LangChainLaravel\AI\Providers\AbstractProvider;
 
 /**
  * @method static string generate(string $prompt, array $options = [])
  * @method static array generateWithMetadata(string $prompt, array $options = [])
  * @method static array chat(array $messages, array $options = [])
  * @method static array chatWithMetadata(array $messages, array $options = [])
- * @method static \LangChain\AI\Providers\AbstractProvider getProvider(string $name = null)
+ * @method static \LangChainLaravel\AI\Providers\AbstractProvider getProvider(string $name = null)
  * @method static array getAvailableProviders()
  * @method static array getProviderCapabilities(string $provider = null)
- * @method static \LangChain\AI\LangChainManager setProvider(string $provider)
- * @method static \LangChain\AI\LangChainManager registerProvider(string $name, string $providerClass)
+ * @method static \LangChainLaravel\AI\LangChainManager setProvider(string $provider)
+ * @method static \LangChainLaravel\AI\LangChainManager registerProvider(string $name, string $providerClass)
  * @method static array getCustomProviders()
  * @method static array getConfig(string $key = null, mixed $default = null)
  * @method static array translateText(string $text, string $targetLanguage, string $sourceLanguage = null, array $params = [])

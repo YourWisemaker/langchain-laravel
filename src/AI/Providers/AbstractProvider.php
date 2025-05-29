@@ -1,6 +1,6 @@
 <?php
 
-namespace LangChain\AI\Providers;
+namespace LangChainLaravel\AI\Providers;
 
 abstract class AbstractProvider
 {
