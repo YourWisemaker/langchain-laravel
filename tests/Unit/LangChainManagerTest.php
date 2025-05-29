@@ -2,12 +2,13 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use LangChain\AI\LangChainManager;
 use OpenAI\Client as OpenAIClient;
 use OpenAI\Exceptions\ErrorException;
 use RuntimeException;
 use Mockery;
+use ReflectionClass;
 
 class LangChainManagerTest extends TestCase
 {
@@ -133,11 +134,12 @@ class LangChainManagerTest extends TestCase
         // Mock an API error
         $mockCompletions = Mockery::mock();
         $mockCompletions->shouldReceive('create')
-            ->andThrow(new ErrorException('API Error'));
+            ->andThrow(new ErrorException(['message' => 'API Error']));
         
         $mockClient = Mockery::mock(OpenAIClient::class);
         $mockClient->shouldReceive('completions')->andReturn($mockCompletions);
         
+        /** @var array{success: bool, text?: string, usage?: array, error?: string} $result */
         $result = $this->manager->generateText('Test prompt');
         
         $this->assertFalse($result['success']);
@@ -192,7 +194,7 @@ class LangChainManagerTest extends TestCase
 
     public function test_config_is_accessible()
     {
-        $reflection = new \ReflectionClass($this->manager);
+        $reflection = new ReflectionClass($this->manager);
         $configProperty = $reflection->getProperty('config');
         $configProperty->setAccessible(true);
         
@@ -201,7 +203,7 @@ class LangChainManagerTest extends TestCase
 
     public function test_openai_client_property_is_initially_null()
     {
-        $reflection = new \ReflectionClass($this->manager);
+        $reflection = new ReflectionClass($this->manager);
         $clientProperty = $reflection->getProperty('openAi');
         $clientProperty->setAccessible(true);
         

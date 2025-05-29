@@ -8,6 +8,8 @@ use LangChain\AI\LangChainManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Mockery;
+use ReflectionClass;
+use RuntimeException;
 
 class LangChainFacadeTest extends TestCase
 {
@@ -85,7 +87,7 @@ class LangChainFacadeTest extends TestCase
         $manager = app('langchain');
         
         // Use reflection to check the config was passed correctly
-        $reflection = new \ReflectionClass($manager);
+        $reflection = new ReflectionClass($manager);
         $configProperty = $reflection->getProperty('config');
         $configProperty->setAccessible(true);
         $config = $configProperty->getValue($manager);
@@ -99,12 +101,12 @@ class LangChainFacadeTest extends TestCase
     {
         Config::set('langchain.openai.api_key', null);
         
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('OpenAI API key is required');
         
         // This should trigger the validation when trying to get OpenAI client
         $manager = app('langchain');
-        $manager->openAi();
+        $manager->openai();
     }
 
     public function test_multiple_facade_calls_use_same_instance()

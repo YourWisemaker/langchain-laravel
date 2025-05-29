@@ -8,6 +8,7 @@ use LangChain\AI\Providers\DeepSeekProvider;
 use LangChain\AI\Providers\AbstractProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use ReflectionClass;
 
 class EnhancedCapabilitiesTest extends TestCase
 {
@@ -252,7 +253,7 @@ class EnhancedCapabilitiesTest extends TestCase
         $provider = LangChain::getProvider('openai');
         
         // Use reflection to test the protected method
-        $reflection = new \ReflectionClass($provider);
+        $reflection = new ReflectionClass($provider);
         $method = $reflection->getMethod('formatPromptForLanguage');
         $method->setAccessible(true);
         

@@ -11,10 +11,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use LangChainLaravel\Facades\LangChain;
+use LangChain\Facades\LangChain;
 
 /**
  * Content Generation Controller

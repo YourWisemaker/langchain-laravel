@@ -6,7 +6,7 @@
  * This file demonstrates the fundamental ways to use the LangChain Laravel package.
  */
 
-use LangChainLaravel\Facades\LangChain;
+use LangChain\Facades\LangChain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 

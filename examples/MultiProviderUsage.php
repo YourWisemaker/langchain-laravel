@@ -7,7 +7,7 @@
  * with the LangChain Laravel package.
  */
 
-use LangChainLaravel\Facades\LangChain;
+use LangChain\Facades\LangChain;
 use Illuminate\Support\Facades\Log;
 
 class MultiProviderUsage

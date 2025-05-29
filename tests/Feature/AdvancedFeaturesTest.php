@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use LangChain\Facades\LangChain;
 use Tests\TestCase;
+use RuntimeException;
 
 /**
  * Advanced Features Test
@@ -340,7 +341,7 @@ class AdvancedFeaturesTest extends TestCase
         // Test with missing API key
         config(['langchain.openai.api_key' => null]);
         
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('OpenAI API key is required');
         
         // This should trigger validation in the service provider

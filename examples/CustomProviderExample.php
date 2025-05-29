@@ -7,8 +7,8 @@
  * with the LangChain Laravel package.
  */
 
-use LangChainLaravel\AI\Providers\AbstractProvider;
-use LangChainLaravel\Facades\LangChain;
+use LangChain\AI\Providers\AbstractProvider;
+use LangChain\Facades\LangChain;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 

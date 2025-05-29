@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use LangChainLaravel\Facades\LangChain;
+use LangChain\Facades\LangChain;
 
 /**
  * Enhanced Capabilities Usage Examples
