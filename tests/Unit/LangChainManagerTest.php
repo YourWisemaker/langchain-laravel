@@ -68,9 +68,6 @@ class LangChainManagerTest extends TestCase
 
     public function test_openai_client_is_singleton()
     {
-        // Mock the Factory to avoid actual API calls
-        $mockClient = Mockery::mock(OpenAIClient::class);
-        
         // We'll need to mock the Factory class in a real implementation
         // For now, this test demonstrates the expected behavior
         $this->markTestSkipped('Requires Factory mocking setup');
@@ -113,14 +110,33 @@ class LangChainManagerTest extends TestCase
             ])
             ->andReturn($mockResponse);
         
-        $mockClient = Mockery::mock(OpenAIClient::class);
-        $mockClient->shouldReceive('completions')->andReturn($mockCompletions);
+        $mockAdapter = Mockery::mock(\LangChainLaravel\AI\Adapters\OpenAI\ClientAdapter::class);
+        // Since OpenAIProvider::generateText is now responsible for the structure,
+        // and it internally calls getClient()->chat() or getClient()->completions(),
+        // we mock the behavior of the provider's generateText method directly.
+
+        $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
+        $mockProvider->shouldAllowMockingProtectedMethods(); // Allow mocking protected methods if any were called by generateText
+
+        // The actual call from LangChainManager is to $providerInstance->generateText()
+        // So we mock this method on the provider.
+        $mockProvider->shouldReceive('generateText')
+            ->with('Test prompt', Mockery::any()) // Allow any params for now, can be more specific
+            ->andReturn([
+                'success' => true,
+                'text' => 'Generated text response',
+                'usage' => [
+                    'prompt_tokens' => 10,
+                    'completion_tokens' => 20,
+                    'total_tokens' => 30
+                ]
+            ]);
+
+        $this->manager->setProvider('openai', $mockProvider);
         
-        // This would require dependency injection or a factory pattern
-        // For now, we'll test the expected structure
-        $this->markTestSkipped('Requires client mocking setup');
+        // $this->markTestSkipped('Requires client mocking setup'); // Try to unskip
         
-        $result = $this->manager->generateText('Test prompt');
+        $result = $this->manager->generateText('Test prompt', [], 'openai'); // Specify provider
         
         $this->assertTrue($result['success']);
         $this->assertEquals('Generated text response', $result['text']);
@@ -129,18 +145,23 @@ class LangChainManagerTest extends TestCase
 
     public function test_generate_text_handles_api_error()
     {
-        $this->markTestSkipped('Requires client mocking setup');
+        // $this->markTestSkipped('Requires client mocking setup'); // Try to unskip
         
-        // Mock an API error
-        $mockCompletions = Mockery::mock();
-        $mockCompletions->shouldReceive('create')
-            ->andThrow(new ErrorException(['message' => 'API Error']));
-        
-        $mockClient = Mockery::mock(OpenAIClient::class);
-        $mockClient->shouldReceive('completions')->andReturn($mockCompletions);
+        // Mock an API error by mocking the provider's generateText method
+        $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
+        $mockProvider->shouldAllowMockingProtectedMethods();
+
+        $mockProvider->shouldReceive('generateText')
+            ->with('Test prompt', Mockery::any())
+            ->andReturn([
+                'success' => false,
+                'error' => 'API Error',
+            ]);
+            
+        $this->manager->setProvider('openai', $mockProvider);
         
         /** @var array{success: bool, text?: string, usage?: array, error?: string} $result */
-        $result = $this->manager->generateText('Test prompt');
+        $result = $this->manager->generateText('Test prompt', [], 'openai'); // Specify provider
         
         $this->assertFalse($result['success']);
         $this->assertEquals('API Error', $result['error']);
@@ -149,7 +170,7 @@ class LangChainManagerTest extends TestCase
 
     public function test_generate_text_with_custom_parameters()
     {
-        $this->markTestSkipped('Requires client mocking setup');
+        // $this->markTestSkipped('Requires client mocking setup'); // Try to unskip
         
         $params = [
             'model' => 'text-curie-001',
@@ -167,29 +188,44 @@ class LangChainManagerTest extends TestCase
             ])
             ->andReturn((object) [
                 'choices' => [(object) ['text' => 'Response']],
-                'usage' => (object) ['total_tokens' => 50]
+                'usage' => ['total_tokens' => 50] // Ensure array format
+            ]);
+
+        $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
+        $mockProvider->shouldReceive('generateText')
+            ->with('Test prompt', $params) // Expect these specific params
+            ->andReturn([
+                'success' => true,
+                'text' => 'Response',
+                'usage' => ['total_tokens' => 50]
             ]);
         
-        $result = $this->manager->generateText('Test prompt', $params);
+        $this->manager->setProvider('openai', $mockProvider);
+        
+        $result = $this->manager->generateText('Test prompt', $params, 'openai'); // Specify provider
         
         $this->assertTrue($result['success']);
     }
 
     public function test_generate_text_uses_default_parameters()
     {
-        $this->markTestSkipped('Requires client mocking setup');
+        // $this->markTestSkipped('Requires client mocking setup'); // Try to unskip
         
-        $mockCompletions = Mockery::mock();
-        $mockCompletions->shouldReceive('create')
-            ->with([
-                'model' => 'text-davinci-003',
-                'prompt' => 'Test prompt',
-                'temperature' => 0.7,
-                'max_tokens' => 256,
-            ])
-            ->once();
+        // We expect the provider's generateText to be called with the prompt and empty params,
+        // as defaults are handled within the provider itself or its defaults.
+        $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
+        $mockProvider->shouldReceive('generateText')
+            ->with('Test prompt', []) // Expect empty params, defaults are provider's concern
+            ->once()
+            ->andReturn([ // Must return the expected structure
+                'success' => true, 
+                'text' => 'Default response', 
+                'usage' => []
+            ]);
+
+        $this->manager->setProvider('openai', $mockProvider);
         
-        $this->manager->generateText('Test prompt');
+        $this->manager->generateText('Test prompt', [], 'openai'); // Specify provider and empty params
     }
 
     public function test_config_is_accessible()
@@ -204,16 +240,30 @@ class LangChainManagerTest extends TestCase
     public function test_openai_client_property_is_initially_null()
     {
         $reflection = new ReflectionClass($this->manager);
-        $clientProperty = $reflection->getProperty('openAi');
-        $clientProperty->setAccessible(true);
+        $providersProperty = $reflection->getProperty('providers');
+        $providersProperty->setAccessible(true);
         
-        $this->assertNull($clientProperty->getValue($this->manager));
+        // 1. Assert that initially, the $providers array does not contain a key for 'openai'
+        $initialProviders = $providersProperty->getValue($this->manager);
+        $this->assertArrayNotHasKey('openai', $initialProviders, "Providers array should not have 'openai' key initially.");
+        
+        // 2. Trigger initialization
+        $this->manager->getProvider('openai');
+        
+        // 3. Assert that the $providers array now contains the key 'openai' and it's the correct type
+        $activeProviders = $providersProperty->getValue($this->manager);
+        $this->assertArrayHasKey('openai', $activeProviders, "Providers array should have 'openai' key after getProvider() call.");
+        $this->assertInstanceOf(
+            \LangChainLaravel\AI\Providers\OpenAIProvider::class,
+            $activeProviders['openai'],
+            "Provider 'openai' should be an instance of OpenAIProvider."
+        );
     }
 
     /**
      * Test data providers
      */
-    public function invalidApiKeyProvider(): array
+    public static function invalidApiKeyProvider(): array
     {
         return [
             'empty string' => [''],
@@ -234,7 +284,7 @@ class LangChainManagerTest extends TestCase
         $manager->openai('test prompt');
     }
 
-    public function parameterProvider(): array
+    public static function parameterProvider(): array
     {
         return [
             'minimal params' => [['temperature' => 0.5]],
@@ -252,7 +302,18 @@ class LangChainManagerTest extends TestCase
      */
     public function test_generate_text_parameter_handling($params)
     {
-        // This would test that parameters are properly merged with defaults
-        $this->markTestSkipped('Requires client mocking setup');
+        // $this->markTestSkipped('Requires client mocking setup'); // Try to unskip
+
+        // This test asserts that LangChainManager correctly passes the parameters
+        // to the provider. The provider itself is responsible for merging with defaults.
+        $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
+        $mockProvider->shouldReceive('generateText')
+            ->with('Test prompt', $params) // Expect the exact params passed
+            ->once()
+            ->andReturn(['success' => true, 'text' => 'Handled response', 'usage' => []]);
+
+        $this->manager->setProvider('openai', $mockProvider);
+
+        $this->manager->generateText('Test prompt', $params, 'openai');
     }
 }

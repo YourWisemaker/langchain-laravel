@@ -201,14 +201,33 @@ jobs:
     
     - name: Check for hardcoded secrets
       run: |
-        # Check for potential hardcoded API keys or secrets
-        if grep -r "sk-" src/ tests/ examples/ --exclude-dir=vendor || \
-           grep -r "api_key.*=.*['\"][a-zA-Z0-9]" src/ tests/ examples/ --exclude-dir=vendor || \
-           grep -r "secret.*=.*['\"][a-zA-Z0-9]" src/ tests/ examples/ --exclude-dir=vendor; then
-          echo "Potential hardcoded secrets found!"
-          exit 1
+        DUMMY_KEYS_PATTERN='test-deepseek-key|test-openai-key|invalid-key-12345|test-api-key'
+        SECRETS_FOUND=false
+
+        # Check for sk- pattern
+        if [ -n "$(grep -r "sk-" src/ tests/ examples/ --exclude-dir=vendor | grep -v -E "$DUMMY_KEYS_PATTERN")" ]; then
+          echo "Potential hardcoded secrets found (sk- pattern)"
+          SECRETS_FOUND=true
         fi
-        echo "No hardcoded secrets detected"
+
+        # Check for api_key... pattern
+        if [ -n "$(grep -r "api_key.*=.*['\"][a-zA-Z0-9]" src/ tests/ examples/ --exclude-dir=vendor | grep -v -E "$DUMMY_KEYS_PATTERN")" ]; then
+          echo "Potential hardcoded secrets found (api_key pattern)"
+          SECRETS_FOUND=true
+        fi
+
+        # Check for secret... pattern
+        if [ -n "$(grep -r "secret.*=.*['\"][a-zA-Z0-9]" src/ tests/ examples/ --exclude-dir=vendor | grep -v -E "$DUMMY_KEYS_PATTERN")" ]; then
+          echo "Potential hardcoded secrets found (secret pattern)"
+          SECRETS_FOUND=true
+        fi
+
+        if [ "$SECRETS_FOUND" = true ]; then
+          echo "Potential hardcoded secrets detected after filtering known dummy keys!"
+          exit 1
+        else
+          echo "No hardcoded secrets detected after filtering known dummy keys."
+        fi
     
     - name: Validate configuration security
       run: |
@@ -274,11 +293,11 @@ jobs:
     - name: Run performance benchmarks
       run: |
         echo "Running performance benchmarks..."
-        vendor/bin/phpunit --group=performance --testdox
+        vendor/bin/phpunit --group=performance --no-coverage --testdox
     
     - name: Memory usage check
       run: |
-        php -d memory_limit=128M vendor/bin/phpunit --group=performance
+        php -d memory_limit=128M vendor/bin/phpunit --group=performance --no-coverage
         echo "Performance tests completed within memory limit"
 
   examples:

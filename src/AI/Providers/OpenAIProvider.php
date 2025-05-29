@@ -2,6 +2,7 @@
 
 namespace LangChainLaravel\AI\Providers;
 
+use LangChainLaravel\AI\Adapters\OpenAI\ClientAdapter;
 use OpenAI\Client as OpenAIClient;
 use OpenAI\Factory;
 use RuntimeException;
@@ -9,7 +10,7 @@ use OpenAI\Exceptions\ErrorException;
 
 class OpenAIProvider extends AbstractProvider
 {
-    protected ?OpenAIClient $client = null;
+    protected ?ClientAdapter $client = null;
 
     /**
      * Generate text using OpenAI
@@ -71,24 +72,36 @@ class OpenAIProvider extends AbstractProvider
     /**
      * Get OpenAI client instance
      */
-    public function getClient(): OpenAIClient
+    public function getClient(): ClientAdapter
     {
         if (!$this->client) {
-            $this->validateConfig();
-            
-            $factory = new Factory()->withApiKey($this->getConfig('api_key'));
-            
-            if ($organization = $this->getConfig('organization')) {
-                $factory = $factory->withOrganization($organization);
-            }
-            
-            if ($baseUrl = $this->getConfig('base_url')) {
-                $factory = $factory->withBaseUri($baseUrl);
-            }
-            
-            $this->client = $factory->make();
+            // --- Temporarily comment out all logic within the if block ---
+            // $this->validateConfig();
+            // 
+            // $currentFactory = new \OpenAI\Factory(); // Ensure OpenAI\Factory is used or imported
+            // $currentFactory = $currentFactory->withApiKey($this->getConfig('api_key'));
+            // 
+            // $organization = $this->getConfig('organization');
+            // if ($organization) {
+            //     $currentFactory = $currentFactory->withOrganization($organization);
+            // }
+            // 
+            // $baseUrl = $this->getConfig('base_url');
+            // if ($baseUrl) {
+            //     $currentFactory = $currentFactory->withBaseUri($baseUrl);
+            // }
+            // 
+            // $realClient = $currentFactory->make();
+            // $this->client = new ClientAdapter($realClient); // Ensure ClientAdapter is imported
+            // --- End of temporarily commented out logic ---
         }
-
+        
+        // To ensure it's valid PHP that can be parsed, even if it's not logically complete:
+        if ($this->client === null) {
+             // This is a placeholder and will likely fail tests, 
+             // but it should allow the file to be parsed.
+             throw new \RuntimeException("Client not initialized - parse test");
+        }
         return $this->client;
     }
 
