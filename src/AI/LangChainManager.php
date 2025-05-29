@@ -24,6 +24,18 @@ class LangChainManager
     }
 
     /**
+     * Set a provider instance, primarily for testing.
+     *
+     * @param string $name
+     * @param AbstractProvider $provider
+     * @return void
+     */
+    public function setProvider(string $name, AbstractProvider $provider): void
+    {
+        $this->providers[$name] = $provider;
+    }
+
+    /**
      * Generate text using the default or specified provider
      *
      * @param string $prompt
