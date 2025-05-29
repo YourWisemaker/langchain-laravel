@@ -1,0 +1,146 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+        - config
+    
+    # Exclude test files from analysis (they have their own rules)
+    excludePaths:
+        - tests/*
+        - vendor/*
+    
+    # Laravel-specific configurations
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    
+    # Custom rules
+    ignoreErrors:
+        # Allow dynamic properties in Laravel models and facades
+        - '#Access to an undefined property#'
+        # Allow mixed types for configuration arrays
+        - '#Parameter .* of .* has no value type specified in iterable type array#'
+        # Allow OpenAI client dynamic method calls
+        - '#Call to an undefined method OpenAI\\Client::#'
+        # Allow Laravel facade static calls
+        - '#Static call to instance method#'
+    
+    # Type coverage
+    reportUnmatchedIgnoredErrors: false
+    
+    # Memory limit
+    memoryLimitFile: 1G
+    
+    # Parallel processing
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 32
+        minimumNumberOfJobsPerProcess: 2
+    
+    # Additional checks
+    checkAlwaysTrueCheckTypeFunctionCall: true
+    checkAlwaysTrueInstanceof: true
+    checkAlwaysTrueStrictComparison: true
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    checkMissingCallableSignature: true
+    checkMissingVarDocTypeHint: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkUninitializedProperties: true
+    checkDynamicProperties: false  # Laravel uses dynamic properties extensively
+    
+    # Doctrine-style annotations
+    treatPhpDocTypesAsCertain: false
+    
+    # Custom error formatters
+    errorFormat: table
+    
+    # Baseline file (if needed)
+    # baseline: phpstan-baseline.neon
+    
+    # Custom stub files for better type inference
+    stubFiles:
+        # Add custom stub files here if needed
+    
+    # Bootstrap file for custom setup
+    # bootstrapFiles:
+    #     - phpstan-bootstrap.php
+    
+    # Type aliases for better readability
+    typeAliases:
+        LangChainResponse: 'array{success: bool, text?: string, usage?: array<string, mixed>, error?: string}'
+        LangChainConfig: 'array<string, mixed>'
+        OpenAIParams: 'array<string, mixed>'
+    
+    # Custom services
+    services:
+        # Add custom services here if needed
+    
+    # Extensions
+    scanFiles:
+        # Add files that should be scanned but not analyzed
+    
+    # Universal object crates
+    universalObjectCratesClasses:
+        - stdClass
+    
+    # Custom rules
+    rules:
+        # Add custom rules here
+    
+    # File extensions
+    fileExtensions:
+        - php
+    
+    # Pollute scope with loop for variables
+    polluteScopeWithLoopInitialAssignments: true
+    polluteScopeWithAlwaysIterableForeach: true
+    
+    # Check benevolent union types
+    checkBenevolentUnionTypes: true
+    
+    # Check explicit mixed
+    checkExplicitMixed: true
+    
+    # Validate PHPDoc
+    validatePhpDocTags: true
+    
+    # Report magic constants
+    reportMagicConstants: true
+    
+    # Report magic properties
+    reportMagicProperties: true
+    
+    # Custom error messages
+    customRulesetUsed: true
+    
+    # Bleeding edge features
+    bleedingEdge: false
+    
+    # Feature toggles
+    featureToggles:
+        bleedingEdge: false
+        disableRuntimeReflectionProvider: false
+        closureDefaultParameterTypeRule: true
+        newRuleLevelHelper: true
+        consistentConstructor: true
+        checkAdvancedIsset: true
+        checkExplicitMixedMissingReturn: true
+        checkFunctionNameCase: true
+        checkInternalClassCaseSensitivity: true
+        reportMagicConstants: true
+        reportMagicProperties: true
+        validatePhpDocTags: true
+        stricterFunctionCallAnalysis: true
+        tooWideReturnTypesInProtectedAndPublicMethods: true
+        uselessReturnValue: true
+        closureUsesThis: true
+        arrayFilter: true
+        arrayUnpacking: true
+        nodeConnectingVisitorCompatibility: true
+        mixedAssignCheck: true
+        strictArrays: false  # Laravel uses mixed arrays frequently
+        allRules: false
