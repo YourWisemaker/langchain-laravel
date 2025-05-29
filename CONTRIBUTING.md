@@ -489,7 +489,7 @@ Any ideas about how this could be implemented.
 **DO NOT** report security issues in public GitHub issues.
 
 Instead:
-1. Email security issues to: [security@example.com]
+1. Email security issues to: [fitranto.arief@gmail.com]
 2. Include detailed information about the vulnerability
 3. Allow time for the issue to be addressed before public disclosure
 

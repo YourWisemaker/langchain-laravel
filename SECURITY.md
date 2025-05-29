@@ -17,7 +17,7 @@ We take the security of LangChain Laravel seriously. If you believe you have fou
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to: **security@langchain-laravel.com**
+Instead, please report them via email to: **fitranto.arief@gmail.com**
 
 Include the following information in your report:
 - Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
@@ -80,7 +80,7 @@ We appreciate the security research community's efforts to responsibly disclose 
 ## Contact
 
 For any security-related questions or concerns, please contact:
-- Email: security@langchain-laravel.com
+- Email: fitranto.arief@gmail.com
 - GitHub: Create a private security advisory
 
 ---
