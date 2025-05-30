@@ -56,6 +56,9 @@ class OpenAIProvider extends AbstractProvider
                     'usage' => $response->usage->toArray(),
                 ];
             }
+        } catch (RuntimeException $e) {
+            // Re-throw configuration validation errors
+            throw $e;
         } catch (ErrorException $e) {
             return [
                 'success' => false,
@@ -115,7 +118,7 @@ class OpenAIProvider extends AbstractProvider
     protected function validateConfig(): void
     {
         $apiKey = $this->getConfig('api_key');
-        if (empty($apiKey) || trim($apiKey) === '') {
+        if ($apiKey === null || $apiKey === '' || (is_string($apiKey) && trim($apiKey) === '')) {
             throw new RuntimeException('OpenAI API key is required');
         }
     }
@@ -145,20 +148,38 @@ class OpenAIProvider extends AbstractProvider
      */
     private function isChatModel(string $model): bool
     {
-        $chatModels = [
-            'gpt-4',
-            'gpt-4-turbo',
-            'gpt-4-turbo-preview',
-            'gpt-3.5-turbo',
-            'gpt-3.5-turbo-16k',
+        // Dynamic pattern matching for chat models
+        $chatModelPatterns = [
+            '/^gpt-\d+/', // All GPT-X variants (gpt-3, gpt-4, gpt-5, gpt-9, etc.)
+            '/^chatgpt-/', // ChatGPT models
+            '/^o1-/', // O1 series models
         ];
 
-        foreach ($chatModels as $chatModel) {
-            if (str_starts_with($model, $chatModel)) {
+        foreach ($chatModelPatterns as $pattern) {
+            if (preg_match($pattern, $model)) {
                 return true;
             }
         }
 
-        return false;
+        // Legacy models that use completions API
+        $legacyModelPatterns = [
+            '/^text-davinci/',
+            '/^text-curie/',
+            '/^text-babbage/',
+            '/^text-ada/',
+            '/^davinci/',
+            '/^curie/',
+            '/^babbage/',
+            '/^ada/',
+        ];
+
+        foreach ($legacyModelPatterns as $pattern) {
+            if (preg_match($pattern, $model)) {
+                return false;
+            }
+        }
+
+        // Default to chat completions for unknown models (safer assumption for newer models)
+        return true;
     }
 }

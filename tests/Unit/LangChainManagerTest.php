@@ -115,6 +115,7 @@ class LangChainManagerTest extends TestCase
         // and it internally calls getClient()->chat() or getClient()->completions(),
         // we mock the behavior of the provider's generateText method directly.
 
+        /** @var \LangChainLaravel\AI\Providers\OpenAIProvider&\Mockery\MockInterface $mockProvider */
         $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
         $mockProvider->shouldAllowMockingProtectedMethods(); // Allow mocking protected methods if any were called by generateText
 
@@ -148,6 +149,7 @@ class LangChainManagerTest extends TestCase
         // $this->markTestSkipped('Requires client mocking setup'); // Try to unskip
         
         // Mock an API error by mocking the provider's generateText method
+        /** @var \LangChainLaravel\AI\Providers\OpenAIProvider&\Mockery\MockInterface $mockProvider */
         $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
         $mockProvider->shouldAllowMockingProtectedMethods();
 
@@ -191,6 +193,7 @@ class LangChainManagerTest extends TestCase
                 'usage' => ['total_tokens' => 50] // Ensure array format
             ]);
 
+        /** @var \LangChainLaravel\AI\Providers\OpenAIProvider&\Mockery\MockInterface $mockProvider */
         $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
         $mockProvider->shouldReceive('generateText')
             ->with('Test prompt', $params) // Expect these specific params
@@ -213,6 +216,7 @@ class LangChainManagerTest extends TestCase
         
         // We expect the provider's generateText to be called with the prompt and empty params,
         // as defaults are handled within the provider itself or its defaults.
+        /** @var \LangChainLaravel\AI\Providers\OpenAIProvider&\Mockery\MockInterface $mockProvider */
         $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
         $mockProvider->shouldReceive('generateText')
             ->with('Test prompt', []) // Expect empty params, defaults are provider's concern
@@ -225,7 +229,10 @@ class LangChainManagerTest extends TestCase
 
         $this->manager->setProvider('openai', $mockProvider);
         
-        $this->manager->generateText('Test prompt', [], 'openai'); // Specify provider and empty params
+        $result = $this->manager->generateText('Test prompt', [], 'openai'); // Specify provider and empty params
+        
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Default response', $result['text']);
     }
 
     public function test_config_is_accessible()
@@ -306,6 +313,7 @@ class LangChainManagerTest extends TestCase
 
         // This test asserts that LangChainManager correctly passes the parameters
         // to the provider. The provider itself is responsible for merging with defaults.
+        /** @var \LangChainLaravel\AI\Providers\OpenAIProvider&\Mockery\MockInterface $mockProvider */
         $mockProvider = Mockery::mock(\LangChainLaravel\AI\Providers\OpenAIProvider::class)->makePartial();
         $mockProvider->shouldReceive('generateText')
             ->with('Test prompt', $params) // Expect the exact params passed
@@ -314,6 +322,9 @@ class LangChainManagerTest extends TestCase
 
         $this->manager->setProvider('openai', $mockProvider);
 
-        $this->manager->generateText('Test prompt', $params, 'openai');
+        $result = $this->manager->generateText('Test prompt', $params, 'openai');
+        
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Handled response', $result['text']);
     }
 }

@@ -183,6 +183,62 @@ abstract class AbstractProvider
     abstract protected function getDefaultParams(): array;
 
     /**
+     * Solve mathematical problems using AI reasoning capabilities
+     *
+     * @param string $problem
+     * @param array<string, mixed> $params
+     * @return array{success: bool, solution?: string, steps?: array, usage?: array, error?: string}
+     */
+    public function solveMath(string $problem, array $params = []): array
+    {
+        if (!$this->supportsCapability('math_solving')) {
+            return [
+                'success' => false,
+                'error' => 'Math solving capability not supported by this provider'
+            ];
+        }
+
+        $prompt = "Solve the following mathematical problem step by step:\n\n{$problem}\n\nProvide a detailed solution with clear steps:";
+        
+        $result = $this->generateText($prompt, array_merge($params, ['temperature' => 0.1]));
+        
+        if ($result['success']) {
+            $result['solution'] = $result['text'];
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Perform complex reasoning tasks
+     *
+     * @param string $question
+     * @param array<string, mixed> $context
+     * @param array<string, mixed> $params
+     * @return array{success: bool, reasoning?: string, conclusion?: string, usage?: array, error?: string}
+     */
+    public function performReasoning(string $question, array $context = [], array $params = []): array
+    {
+        if (!$this->supportsCapability('reasoning')) {
+            return [
+                'success' => false,
+                'error' => 'Reasoning capability not supported by this provider'
+            ];
+        }
+
+        $contextStr = empty($context) ? '' : "\n\nContext:\n" . json_encode($context, JSON_PRETTY_PRINT);
+        $prompt = "Think through this question step by step and provide detailed reasoning:{$contextStr}\n\nQuestion: {$question}\n\nReasoning:";
+        
+        $result = $this->generateText($prompt, array_merge($params, ['temperature' => 0.3]));
+        
+        if ($result['success']) {
+            $result['reasoning'] = $result['text'];
+        }
+        
+        return $result;
+    }
+
+    /**
      * Get supported capabilities for this provider
      *
      * @return array<string>
