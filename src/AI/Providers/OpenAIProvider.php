@@ -80,7 +80,8 @@ class OpenAIProvider extends AbstractProvider
         if (!$this->client) {
             $this->validateConfig();
             
-            $factory = new Factory()->withApiKey($this->getConfig('api_key'));
+            $factory = new Factory();
+            $factory = $factory->withApiKey($this->getConfig('api_key'));
             
             if ($organization = $this->getConfig('organization')) {
                 $factory = $factory->withOrganization($organization);
