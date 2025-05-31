@@ -303,7 +303,10 @@ abstract class AbstractProvider
     protected function resolveModel(string $model): string
     {
         $aliases = config('langchain.model_aliases', []);
-        return $aliases[$model] ?? $model;
+        if (is_array($aliases) && isset($aliases[$model])) {
+            return (string) $aliases[$model];
+        }
+        return $model;
     }
 
     /**
@@ -341,6 +344,7 @@ abstract class AbstractProvider
      */
     protected function getRequestTimeout(): int
     {
-        return $this->getConfig('timeout', 30);
+        $timeout = $this->getConfig('timeout', 30);
+        return (int) $timeout;
     }
 }

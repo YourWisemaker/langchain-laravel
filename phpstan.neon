@@ -1,8 +1,6 @@
 includes:
     - vendor/larastan/larastan/extension.neon
 
-bleedingEdge: false
-
 parameters:
     level: 8
     paths:

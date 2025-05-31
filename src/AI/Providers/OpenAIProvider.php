@@ -24,7 +24,24 @@ class OpenAIProvider extends AbstractProvider
         try {
             $this->validateConfig();
             $mergedParams = $this->mergeParams($params);
-            $model = $this->resolveModel($mergedParams['model']);
+            // Ensure model is a string for PHPStan type checking
+            $modelParam = '';
+            if (isset($mergedParams['model'])) {
+                // PHPStan type safety for model parameter
+                if (is_string($mergedParams['model'])) {
+                    $modelParam = $mergedParams['model'];
+                } else {
+                    $modelValue = $mergedParams['model'];
+                    if (is_object($modelValue)) {
+                        $modelParam = get_class($modelValue);
+                    } elseif (is_scalar($modelValue)) {
+                        $modelParam = (string) $modelValue;
+                    } else {
+                        $modelParam = 'unknown_model_type';
+                    }
+                }
+            }
+            $model = $this->resolveModel($modelParam);
 
             // Use chat completions for newer models, completions for older ones
             if ($this->isChatModel($model)) {
@@ -37,9 +54,10 @@ class OpenAIProvider extends AbstractProvider
                     'max_tokens' => $mergedParams['max_tokens'],
                 ]);
 
+                $content = $response->choices[0]->message->content;
                 return [
                     'success' => true,
-                    'text' => $response->choices[0]->message->content,
+                    'text' => $content !== null ? (string) $content : '',
                     'usage' => $response->usage->toArray(),
                 ];
             } else {
@@ -50,9 +68,10 @@ class OpenAIProvider extends AbstractProvider
                     'max_tokens' => $mergedParams['max_tokens'],
                 ]);
 
+                $text = $response->choices[0]->text;
                 return [
                     'success' => true,
-                    'text' => $response->choices[0]->text,
+                    'text' => $text !== null ? (string) $text : '',
                     'usage' => $response->usage->toArray(),
                 ];
             }
@@ -81,14 +100,52 @@ class OpenAIProvider extends AbstractProvider
             $this->validateConfig();
             
             $factory = new Factory();
-            $factory = $factory->withApiKey($this->getConfig('api_key'));
+            // Handle API key type safety
+            $rawApiKey = $this->getConfig('api_key');
+            if (is_string($rawApiKey)) {
+                $apiKey = $rawApiKey;
+            } elseif (is_scalar($rawApiKey)) {
+                $apiKey = (string) $rawApiKey;
+            } else {
+                // Fallback for non-scalar types
+                $apiKey = is_object($rawApiKey) ? get_class($rawApiKey) : 'invalid_api_key';
+            }
+            $factory = $factory->withApiKey($apiKey);
             
-            if ($organization = $this->getConfig('organization')) {
-                $factory = $factory->withOrganization($organization);
+            $organization = $this->getConfig('organization');
+            if ($organization !== null && $organization !== '') {
+                if (is_string($organization)) {
+                    $factory = $factory->withOrganization($organization);
+                } elseif (is_object($organization)) {
+                    $factory = $factory->withOrganization(get_class($organization));
+                } else {
+                    // Handle non-string, non-object types
+                    $orgStr = '';
+                    if (is_scalar($organization)) {
+                        $orgStr = (string) $organization;
+                    } else {
+                        $orgStr = 'invalid_organization';
+                    }
+                    $factory = $factory->withOrganization($orgStr);
+                }
             }
             
-            if ($baseUrl = $this->getConfig('base_url')) {
-                $factory = $factory->withBaseUri($baseUrl);
+            $baseUrl = $this->getConfig('base_url');
+            if ($baseUrl !== null && $baseUrl !== '') {
+                if (is_string($baseUrl)) {
+                    $factory = $factory->withBaseUri($baseUrl);
+                } elseif (is_object($baseUrl)) {
+                    $factory = $factory->withBaseUri(get_class($baseUrl));
+                } else {
+                    // Handle non-string, non-object types
+                    $baseUrlStr = '';
+                    if (is_scalar($baseUrl)) {
+                        $baseUrlStr = (string) $baseUrl;
+                    } else {
+                        $baseUrlStr = 'invalid_base_url';
+                    }
+                    $factory = $factory->withBaseUri($baseUrlStr);
+                }
             }
             
             $realClient = $factory->make();
