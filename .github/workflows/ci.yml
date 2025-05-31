@@ -118,10 +118,14 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
     
     - name: Install dependencies
-      run: composer install --prefer-dist --no-interaction
+      run: |
+        composer clear-cache
+        composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+        # Ensure php-parser is properly installed
+        composer require --dev nikic/php-parser --no-interaction
     
     - name: Run PHPStan
-      run: composer analyse
+      run: vendor/bin/phpstan analyse
     
     - name: Check code formatting
       run: composer format-check
